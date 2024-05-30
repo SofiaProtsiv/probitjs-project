@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Probid.js Project</title>
+</head>
+
+<body>
+  <div id="ad-container"></div>
+
+  <script src="/node_modules/prebid.js/build/dist/prebid.js"></script>
+  <script>
+    var adUnits = [{
+      code: 'ad-container',
+      mediaTypes: {
+        banner: {
+          sizes: [[300, 250]]
+        }
+      },
+      bids: [{
+        bidder: 'advertiseX',
+        params: {
+          placementId: '123'
+        }
+      }]
+    }];
+
+    pbjs.que.push(() => {
+      pbjs.addAdUnits(adUnits);
+      pbjs.requestBids({
+        bidsBackHandler: bidResponses => {
+          Object.entries(bidResponses).forEach(([adUnitCode, response]) => {
+            response.bids.forEach(bid => {
+              document.getElementById(adUnitCode).innerHTML = bid.ad;
+            });
+          });
+        }
+      });
+    }); 
+  </script>
+</body>
+
+</html>
